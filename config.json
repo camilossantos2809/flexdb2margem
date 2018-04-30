@@ -1,0 +1,29 @@
+[
+	{
+		"nomeFantasia": "TESTE",
+		"licenca": "TESTEHIPCOM",
+		"cnpj": "12345678910123",
+		"numeroLoja": 1, // ID da LOJA.
+		"timeZone": "America/Bahia",
+		"Estado": "BAHIA",
+		"Bairro": "BROTAS",
+		"Cidade":"SALVADOR",
+		"Automacao": "RP INFO SISTEMAS",
+		"horarios": {
+			"uteis": {
+				"inicio": "00:00",
+				"fim": "23:59"
+			},
+			"domingo": {
+				"inicio": "00:00",
+				"fim": "23:59"
+			}
+		},
+		"codigoSistema": 8.1,
+		"host": "localhost",
+		"nomeBanco": "dbTestes", // NOME DO BANCO DE DADOS. 
+		"usuario": "usuario_leitura",
+		"senha": "merc123=",
+		"porta": 3306
+	}
+]
