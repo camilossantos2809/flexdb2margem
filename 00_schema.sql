@@ -1,5 +1,9 @@
 -- Executar comandos no database wrpdv
 
+/*
+update vdonline set vdo_data = current_date||to_char(vdo_data,' HH:mm:ss');
+*/
+
 create extension if not exists postgres_fdw;
 
 create schema if not exists erp;

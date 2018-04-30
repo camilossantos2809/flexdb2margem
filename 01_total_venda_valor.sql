@@ -1,8 +1,17 @@
+-- Total vendido do dia 
 SELECT
-    sum(vdo_valor)
+    cast(sum(
+        case 
+            when vdo_norm_canc='N'
+            then vdo_valor else vdo_valor * (-1)
+        end
+    ) as numeric(10,2)) as valor
 FROM
     vdonline
 where 
-    vdo_data >= CURRENT_DATE and vdo_data < CURRENT_DATE + interval '1 day'
+    (
+        vdo_data >= CURRENT_DATE 
+        and vdo_data < CURRENT_DATE + interval '1 day'
+    )
     and vdo_unidade = '001'
-    and vdo_norm_canc = 'N';
+    and vdo_tipo in('V','v');
