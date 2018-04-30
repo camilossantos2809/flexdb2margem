@@ -10,7 +10,7 @@ SELECT
     count(distinct vdo_cupom) filter (where vdo_tipo='V') as qtd_cupom
 FROM
     vdonline
-        inner join usuario
+        left join usuario
             on (vdo_operador=usu_codigo)
 where 
     (

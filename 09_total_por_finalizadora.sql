@@ -11,7 +11,7 @@ SELECT
     count(distinct vdo_cupom) filter (where vdo_tipo='V') as qtd
 FROM
     vdonline
-        inner join finalizadoras
+        left join finalizadoras
             on (vdo_final=lpad(fin_codigo::text, 2,'0'))
 where 
     (
