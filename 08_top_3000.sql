@@ -4,7 +4,7 @@ select
     ite_descricao as descricao,
     max(coalesce(tpc_preco,0)) as valor_unitario,
     sum(coalesce(vopr_qtde,0)) as quantidade,
-    sum(coalesce(vopr_valor,0)) as valor
+    sum(coalesce(vopr_valor-vopr_desconto,0)) as valor
 from
     erp.vdonlineprod vd
         left join tabitens
