@@ -4,7 +4,7 @@ SELECT
     cast(vdo_data as date) as dataproc,
     cast(vdo_data as time) as hora,
     usu_nome as operador,
-    'null' as supervisor,
+    'NULL' as supervisor,
     vdo_valor as valor,
     vdo_cupom as nrocupom
 FROM
