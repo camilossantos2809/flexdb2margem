@@ -1,22 +1,22 @@
 -- Venda por faixa de hora
-SELECT
-    to_char(vdo_data, 'HH24') as hora,
-    cast(sum(
-        case 
-            when vdo_norm_canc='N'
-            then vdo_valor else vdo_valor * (-1)
-        end
-    ) as numeric(10,2)) as valor,
-    count(distinct vdo_cupom) filter (where vdo_tipo='V') as num_cupons,
-    "valor"/"num_cupons"
-FROM
-    vdonline
-where 
-    (
-        vdo_data >= CURRENT_DATE 
-        and vdo_data < CURRENT_DATE + interval '1 day'
-    )
-    and vdo_unidade = '001'
-    and vdo_tipo in('V','v')
-group by to_char(vdo_data, 'HH24')
-order by 1;
+select
+    *,
+    round(num_itens/num_cupons, 2) as media_itens,
+    round(valor/num_cupons, 2) as media_valor
+from (
+    select
+        left(vopr_hora,2) as hora,
+        sum(coalesce(vopr_valor-vopr_desconto,0)) as valor,
+        count(distinct vopr_cupom) as num_cupons,
+        count(distinct vopr_prod_codigo) as num_itens
+    from
+        erp.vdonlineprod vd
+            left join tabitens
+                on (vd.vopr_prod_codigo=cast(ite_cod_interno as numeric))
+    where vd.vopr_datamvto=CURRENT_DATE
+        and vd.vopr_unid_codigo='001'
+    group by
+        left(vopr_hora,2)
+) as x
+order by
+    hora;
