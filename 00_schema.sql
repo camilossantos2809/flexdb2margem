@@ -1,7 +1,7 @@
 -- Executar comandos no database wrpdv
 
 /*
-update vdonline set vdo_data = current_date||to_char(vdo_data,' HH:mm:ss');
+update vdonline set vdo_data = current_date + cast(vdo_data as time);
 */
 
 create extension if not exists postgres_fdw;
@@ -13,7 +13,7 @@ CREATE SERVER erp
         OPTIONS (
             host 'localhost',
             port '5432',
-            dbname 'erp_testes'
+            dbname 'erp_irmaos_ribeiro'
         );
 
 create user mapping for postgres 
