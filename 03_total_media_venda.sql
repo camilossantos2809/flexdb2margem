@@ -3,4 +3,4 @@ select
     round(avg(vopr_valor-vopr_desconto), 2) as media_itens
 from erp.vdonlineprod
 where
-    vopr_unid_codigo = lpad(cast(numeroLoja as varchar),3,'0');
+    vopr_unid_codigo = '001'--lpad(cast(numeroLoja as varchar),3,'0');

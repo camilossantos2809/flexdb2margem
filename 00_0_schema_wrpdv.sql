@@ -1,13 +1,11 @@
--- Executar comandos no database wrpdv
-
-/*
-update vdonline set vdo_data = current_date + cast(vdo_data as time);
-*/
+-- Comandos a ser executados no database wrpdv
 
 create extension if not exists postgres_fdw;
 
+create user margem with encrypted password 'merc123=';
+
+create schema if not exists margem authorization margem;
 create schema if not exists erp;
-create schema if not exists margem;
 
 CREATE SERVER erp 
     FOREIGN DATA WRAPPER postgres_fdw 
@@ -19,6 +17,8 @@ CREATE SERVER erp
 
 create user mapping for postgres 
     server erp options(user 'postgres', password 'rp1064');
+create user mapping for margem
+    server erp options(user 'margem', password 'merc123=');
 
 import foreign schema public 
 limit to(
@@ -156,3 +156,9 @@ language plpgsql strict as $$
         return;
     end
 $$;
+
+grant usage on schema erp to margem;
+grant select on all tables in schema erp to margem;
+grant select on all tables in schema public to margem;
+alter default privileges in schema erp grant select on tables to margem;
+alter default privileges in schema public grant select on tables to margem;

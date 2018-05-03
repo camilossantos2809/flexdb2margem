@@ -13,8 +13,8 @@ from
             on (vd.vopr_prod_codigo=cast(tpc_cod_interno as numeric))
 where
     vd.vopr_datamvto=CURRENT_DATE
-    and vd.vopr_unid_codigo = lpad(cast(numeroLoja as varchar),3,'0')
-    and tpc_unidade = lpad(cast(numeroLoja as varchar),3,'0')
+    and vd.vopr_unid_codigo = '001'--lpad(cast(numeroLoja as varchar),3,'0')
+    and tpc_unidade = '001'--lpad(cast(numeroLoja as varchar),3,'0')
 group by
     ite_codbarra,
     ite_descricao

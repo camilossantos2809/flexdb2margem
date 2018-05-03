@@ -14,4 +14,4 @@
         media_itens numeric,
         media_valor numeric
 */
-select * from margem.fn_vendas_vendedor(current_date, numeroLoja);
+select * from margem.fn_vendas_vendedor(current_date, 1);

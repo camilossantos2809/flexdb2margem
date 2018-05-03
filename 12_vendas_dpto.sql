@@ -12,7 +12,7 @@ from
             on (ite_cod_dpto=dpt_codigo)
 where
     vd.vopr_datamvto = CURRENT_DATE
-    and vd.vopr_unid_codigo = lpad(cast(numeroLoja as varchar),3,'0')
+    and vd.vopr_unid_codigo = '001'--lpad(cast(numeroLoja as varchar),3,'0')
 group by
     dpt_codigo,
     dpt_nome
