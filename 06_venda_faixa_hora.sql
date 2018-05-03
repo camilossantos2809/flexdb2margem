@@ -13,8 +13,9 @@ from (
         erp.vdonlineprod vd
             left join tabitens
                 on (vd.vopr_prod_codigo=cast(ite_cod_interno as numeric))
-    where vd.vopr_datamvto=CURRENT_DATE
-        and vd.vopr_unid_codigo='001'
+    where
+        vd.vopr_datamvto=CURRENT_DATE
+        and vd.vopr_unid_codigo = lpad(cast(numeroLoja as varchar),3,'0')
     group by
         left(vopr_hora,2)
 ) as x
