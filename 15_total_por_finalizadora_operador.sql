@@ -1,7 +1,7 @@
 -- Venda por operador e finalizadora
 SELECT
     cast(vdo_data as date) as data,
-    vdo_operador || usu_nome as operador,
+    concat(vdo_operador,' - ', usu_nome) as operador,
     vdo_final as meio_pagto,
     fin_descricao as descricao,
     cast(sum(
@@ -26,7 +26,7 @@ where
     and vdo_tipo in('V','v')
 group by
     cast(vdo_data as date),
-    vdo_operador || usu_nome,
+    concat(vdo_operador,' - ', usu_nome),
     vdo_final,
     fin_descricao
 order by 2,3;

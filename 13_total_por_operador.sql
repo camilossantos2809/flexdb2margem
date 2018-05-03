@@ -1,6 +1,6 @@
 -- Venda por operador
 SELECT
-    vdo_operador || usu_nome as operador,
+    concat(vdo_operador,' - ', usu_nome) as operador,
     cast(sum(
         case 
             when vdo_norm_canc='N'
@@ -19,5 +19,6 @@ where
     )
     and vdo_unidade = '001'
     and vdo_tipo in('V','v')
-group by vdo_operador || usu_nome
+group by 
+    concat(vdo_operador,' - ', usu_nome)
 order by 1;

@@ -91,3 +91,68 @@ language plpgsql strict as $$
         return;
     end
 $$;
+
+create or replace function margem.fn_vendas_vendedor(
+    data_mvto date,
+    unidade integer
+)
+returns table (
+    data date,
+    vendedor text,
+    valor numeric,
+    num_cupons integer,
+    num_itens integer,
+    media_itens numeric,
+    media_valor numeric
+)
+language plpgsql strict as $$
+    declare
+        v_tabela text;
+        v_unidade text;
+        v_query text;
+    begin
+        v_tabela := format('tab_venda_%s', to_char(data_mvto, 'MMyy'));
+        v_unidade := quote_literal(lpad(unidade::text, 3, '0'));
+        v_query := format($sql$
+            with vendas as (
+                select
+                    tvd_data_hora,
+                    tvd_cupom,
+                    string_to_array(tvd_registro, '|') as tvd_registro
+                from %s
+                where
+                    (
+                        tvd_data_hora >= $1 
+                        and tvd_data_hora < $1 + interval '1 day'
+                    )
+                    and tvd_tipo_reg = 'VITN'
+                    and tvd_unidade = %s
+            ),
+            vendas_vendedor as (
+                select
+                    cast(tvd_data_hora as date) as data,
+                    coalesce(vdr_nome::text,'NULL') as vendedor,
+                    sum(
+                        round(cast(nullif(tvd_registro[5],'') as numeric)/100,2) -
+                        coalesce(round(cast(nullif(tvd_registro[29],'') as numeric)/100,2),0)
+                    ) as valor,
+                    count(distinct tvd_cupom)::integer as num_cupons,
+                    count(distinct tvd_registro[1])::integer as num_itens
+                from vendas
+                    left join vendedores
+                        on (tvd_registro[16]=vdr_codigo::text)
+                group by
+                    cast(tvd_data_hora as date),
+                    vdr_nome
+            )
+            select
+                *,
+                round(num_itens::numeric / num_cupons::numeric,2) as media_itens,
+                round((valor / num_cupons)::numeric,2) as media_valor
+            from vendas_vendedor
+        $sql$, v_tabela, v_unidade);
+
+        return query execute v_query using(data_mvto);
+        return;
+    end
+$$;
