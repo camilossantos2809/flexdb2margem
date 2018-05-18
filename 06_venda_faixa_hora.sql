@@ -14,7 +14,7 @@ from (
             left join tabitens
                 on (vd.vopr_prod_codigo=cast(ite_cod_interno as numeric))
     where
-        vd.vopr_datamvto=CURRENT_DATE
+        vd.vopr_datamvto='2018-05-14'
         and vd.vopr_unid_codigo = '001'--lpad(cast(numeroLoja as varchar),3,'0')
     group by
         left(vopr_hora,2)

@@ -10,15 +10,17 @@ create schema if not exists erp;
 CREATE SERVER erp 
     FOREIGN DATA WRAPPER postgres_fdw 
         OPTIONS (
-            host 'localhost',
+            host '10.1.12.127',
             port '5432',
-            dbname 'erp_irmaos_ribeiro'
+            dbname 'erp_margem'
         );
 
 create user mapping for postgres 
     server erp options(user 'postgres', password 'rp1064');
 create user mapping for margem
     server erp options(user 'margem', password 'merc123=');
+create user mapping for rpdv
+    server erp options(user 'rpdv', password 'rpdvwin1064');
 
 import foreign schema public 
 limit to(
