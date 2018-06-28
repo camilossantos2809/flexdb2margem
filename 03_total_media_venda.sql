@@ -4,4 +4,4 @@ select
 from erp.vdonlineprod
 where
     vopr_datamvto=CURRENT_DATE
-    and vopr_unid_codigo = lpad(cast(numeroLoja as varchar),3,'0');
+    and vopr_unid_codigo = lpad(cast(1 as varchar),3,'0');

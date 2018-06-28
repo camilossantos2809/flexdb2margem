@@ -13,7 +13,7 @@ FROM
             on (vdo_operador=usu_codigo)
 where 
     (
-        vdo_data >= CURRENT_DATE 
+        vdo_data >= CURRENT_DATE
         and vdo_data < CURRENT_DATE + interval '1 day'
     )
     and vdo_unidade = '001'--lpad(cast(numeroLoja as varchar),3,'0')

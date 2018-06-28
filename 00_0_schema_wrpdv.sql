@@ -2,32 +2,54 @@
 
 create extension if not exists postgres_fdw;
 
+-- Cria o usuário que será utilizado pelo Margem para conectar no banco de dados
+-- Alterar a senha se necessário
 create user margem with encrypted password 'merc123=';
 
 create schema if not exists margem authorization margem;
 create schema if not exists erp;
 
+-- Em options, alterar para os dados de acesso ao database erp
 CREATE SERVER erp 
     FOREIGN DATA WRAPPER postgres_fdw 
         OPTIONS (
             host '10.1.12.127',
             port '5432',
-            dbname 'erp_margem'
+            dbname 'erp'
         );
 
+-- Informar em user e password os dados de um superuser
+-- Se database erp e wrpdv estiverem no mesmo servidor pode ser utilizado o mesmo usuário e senha correspondente
 create user mapping for postgres 
-    server erp options(user 'postgres', password 'rp1064');
+    server erp options(user 'postgres', password '123456');
+create user mapping for rpdv
+    server erp options(user 'rpdv', password '123456');
+create user mapping for erp
+    server erp options(user 'erp');
+
+-- Utilizar mesma senha definida na criação do usuário margem
 create user mapping for margem
     server erp options(user 'margem', password 'merc123=');
-create user mapping for rpdv
-    server erp options(user 'rpdv', password 'rpdvwin1064');
 
-import foreign schema public 
-limit to(
-    vdonlineprod
+create foreign table erp.vdonlineprod(
+    vopr_datamvto date,
+    vopr_hora varchar(6),
+    vopr_status varchar(1),
+    vopr_unid_codigo varchar(3),
+    vopr_pdvs_codigo varchar (3),
+    vopr_cupom varchar(6),
+    vopr_codbarras varchar(14),
+    vopr_prod_codigo numeric(8,0),
+    vopr_qtde numeric(10,3),
+    vopr_valor numeric(12,2),
+    vopr_desconto numeric(12,2),
+    vopr_tiporeg varchar(2)
 )
-from server erp
-into erp;
+server erp
+options (
+    schema_name 'public',
+    table_name 'vdonlineprod'
+);
 
 create or replace function margem.fn_itens_desconto(
     data_mvto date,
