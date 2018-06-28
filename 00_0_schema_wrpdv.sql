@@ -4,9 +4,9 @@ create extension if not exists postgres_fdw;
 
 -- Cria o usuário que será utilizado pelo Margem para conectar no banco de dados
 -- Alterar a senha se necessário
-create user margem with encrypted password 'merc123=';
+create user gestorrp with encrypted password 'merc123=';
 
-create schema if not exists margem authorization margem;
+create schema if not exists margem authorization gestorrp;
 create schema if not exists erp;
 
 -- Em options, alterar para os dados de acesso ao database erp
@@ -28,8 +28,8 @@ create user mapping for erp
     server erp options(user 'erp');
 
 -- Utilizar mesma senha definida na criação do usuário margem
-create user mapping for margem
-    server erp options(user 'margem', password 'merc123=');
+create user mapping for gestorrp
+    server erp options(user 'gestorrp', password 'merc123=');
 
 create foreign table erp.vdonlineprod(
     vopr_datamvto date,
@@ -181,8 +181,8 @@ language plpgsql strict as $$
     end
 $$;
 
-grant usage on schema erp to margem;
-grant select on all tables in schema erp to margem;
-grant select on all tables in schema public to margem;
-alter default privileges in schema erp grant select on tables to margem;
-alter default privileges in schema public grant select on tables to margem;
+grant usage on schema erp to gestorrp;
+grant select on all tables in schema erp to gestorrp;
+grant select on all tables in schema public to gestorrp;
+alter default privileges in schema erp grant select on tables to gestorrp;
+alter default privileges in schema public grant select on tables to gestorrp;

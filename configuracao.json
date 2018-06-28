@@ -1,0 +1,56 @@
+[
+	{
+		"nomeFantasia": "Unidade 001",
+		"licenca": "ABCDEFGHIJ",
+		"cnpj": "12345678901234",
+		"numeroLoja": 1,
+		"timeZone": "America/Bahia",
+		"Estado": "PARANÁ",
+		"Cidade": "CURITIBA",
+		"Bairro": "REBOUÇAS",
+		"Automacao": "RP INFO",
+		"horarios": {
+			"uteis": {
+				"inicio": "00:00",
+				"fim": "23:59"
+			},
+			"domingo": {
+				"inicio": "00:00",
+				"fim": "23:59"
+			}
+		},
+		"codigoSistema": 8.1,
+		"host": "192.168.0.1",
+		"nomeBanco": "wrpdv",
+		"usuario": "gestorrp",
+		"senha": "merc123=",
+		"porta": 5432
+	},
+	{
+		"nomeFantasia": "Unidade 002",
+		"licenca": "ABCDEFGHIJ",
+		"cnpj": "12345678900000",
+		"numeroLoja": 2,
+		"timeZone": "America/Bahia",
+		"Estado": "PARANÁ",
+		"Cidade": "CURITIBA",
+		"Bairro": "CENTRO",
+		"Automacao": "RP INFO",
+		"horarios": {
+			"uteis": {
+				"inicio": "00:00",
+				"fim": "23:59"
+			},
+			"domingo": {
+				"inicio": "00:00",
+				"fim": "23:59"
+			}
+		},
+		"codigoSistema": 8.1,
+		"host": "192.168.0.1",
+		"nomeBanco": "wrpdv",
+		"usuario": "gestorrp",
+		"senha": "merc123=",
+		"porta": 5432
+	}
+]
