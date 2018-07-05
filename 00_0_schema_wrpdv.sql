@@ -18,14 +18,29 @@ CREATE SERVER erp
             dbname 'erp'
         );
 
+/*
+Se for necessário alterar os dados de conexão do database erp utilizar o exemplo abaixo
+ALTER SERVER erp OPTIONS (
+    set host '10.1.12.123',
+    set port '5433',
+    set dbname 'erp_testes'
+)
+*/
+
 -- Informar em user e password os dados de um superuser
 -- Se database erp e wrpdv estiverem no mesmo servidor pode ser utilizado o mesmo usuário e senha correspondente
 create user mapping for postgres 
     server erp options(user 'postgres', password '123456');
 create user mapping for rpdv
-    server erp options(user 'rpdv', password '123456');
+    server erp options(user 'postgres', password '123456');
 create user mapping for erp
-    server erp options(user 'erp');
+    server erp options(user 'postgres', password '123456');
+
+/*
+Se necessário alterar o usuário e/ou senha depois de criado utilizar o evento
+alter user mapping for postgres
+    server erp options(set user 'outro_super_user', set password '654321');
+*/
 
 -- Utilizar mesma senha definida na criação do usuário margem
 create user mapping for gestorrp
