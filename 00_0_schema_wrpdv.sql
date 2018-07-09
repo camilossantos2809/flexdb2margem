@@ -1,15 +1,20 @@
 -- Comandos a ser executados no database wrpdv
 
+-- Habilita a extensão postgres_fdw no database wrpdv
+-- Essa extensão possibilita o uso de tabelas de diferentes databases
 create extension if not exists postgres_fdw;
 
--- Cria o usuário que será utilizado pelo Margem para conectar no banco de dados
+-- Cria o usuário que será utilizado pelo MROBOT.exe para conectar no banco de dados
 -- Alterar a senha se necessário
+-- Esse usuário e senha que devem ser preenchidos no arquivo de configuração
 create user gestorrp with encrypted password 'merc123=';
 
+-- Cria schema para manter os objetos criados para a integração separados dos utilizados no wrpdv
 create schema if not exists margem authorization gestorrp;
 create schema if not exists erp;
 
--- Em options, alterar para os dados de acesso ao database erp
+-- Cria "link" com o database erp
+-- Em options será necessário alterar o conteúdo para os dados de acesso ao database erp
 CREATE SERVER erp 
     FOREIGN DATA WRAPPER postgres_fdw 
         OPTIONS (
@@ -20,6 +25,7 @@ CREATE SERVER erp
 
 /*
 Se for necessário alterar os dados de conexão do database erp utilizar o exemplo abaixo
+
 ALTER SERVER erp OPTIONS (
     set host '10.1.12.123',
     set port '5433',
@@ -36,16 +42,18 @@ create user mapping for rpdv
 create user mapping for erp
     server erp options(user 'postgres', password '123456');
 
-/*
-Se necessário alterar o usuário e/ou senha depois de criado utilizar o evento
-alter user mapping for postgres
-    server erp options(set user 'outro_super_user', set password '654321');
-*/
-
 -- Utilizar mesma senha definida na criação do usuário margem
 create user mapping for gestorrp
     server erp options(user 'gestorrp', password 'merc123=');
 
+/*
+Se necessário alterar o usuário e/ou senha depois de criado pode ser realizada a alteração conforme o exemplo:
+
+alter user mapping for postgres
+    server erp options(set user 'outro_super_user', set password '654321');
+*/
+
+-- Cria a tabela vdonlineprod do database erp no database wrpdv através do postgres_fdw
 create foreign table erp.vdonlineprod(
     vopr_datamvto date,
     vopr_hora varchar(6),
@@ -66,6 +74,7 @@ options (
     table_name 'vdonlineprod'
 );
 
+-- Função necessária para retornar os dados da query 11 conforme layout da integração
 create or replace function margem.fn_itens_desconto(
     data_mvto date,
     unidade integer
@@ -131,6 +140,7 @@ language plpgsql strict as $$
     end
 $$;
 
+-- Função necessária para retornar os dados da query 14 conforme layout da integração
 create or replace function margem.fn_vendas_vendedor(
     data_mvto date,
     unidade integer
@@ -196,6 +206,7 @@ language plpgsql strict as $$
     end
 $$;
 
+-- Atribuição de permissões aos usuários criados no banco de dados.
 grant usage on schema erp to gestorrp;
 grant select on all tables in schema erp to gestorrp;
 grant select on all tables in schema public to gestorrp;
