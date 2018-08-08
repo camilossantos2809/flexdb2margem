@@ -228,7 +228,7 @@ create foreign table erp.produn(
 ) server erp options (
     schema_name 'public',
     table_name 'produn'
-)
+);
 
 -- Função necessária para retornar os dados da query 11 conforme layout da integração
 create or replace function gestorrp.fn_itens_desconto(
