@@ -1,4 +1,4 @@
--- top 100 produtos por valor
+-- 100 produtos mais vendidos, por valor
 with prun as (
     select
         prun_prod_codigo, 
