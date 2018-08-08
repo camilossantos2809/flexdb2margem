@@ -10,7 +10,7 @@ create extension if not exists postgres_fdw;
 create user gestorrp with encrypted password 'merc123=';
 
 -- Cria schema para manter os objetos criados para a integração separados dos utilizados no wrpdv
-create schema if not exists margem authorization gestorrp;
+create schema if not exists gestorrp authorization gestorrp;
 create schema if not exists erp;
 
 -- Cria "link" com o database erp
@@ -42,7 +42,7 @@ create user mapping for rpdv
 create user mapping for erp
     server erp options(user 'postgres', password '123456');
 
--- Utilizar mesma senha definida na criação do usuário margem
+-- Utilizar mesma senha definida na criação do usuário gestorrp
 create user mapping for gestorrp
     server erp options(user 'gestorrp', password 'merc123=');
 
@@ -74,8 +74,164 @@ options (
     table_name 'vdonlineprod'
 );
 
+-- Cria a tabela produn do database erp no database wrpdv através do postgres_fdw
+create foreign table erp.produn(
+    prun_prod_codigo numeric(8,0) NOT NULL,
+    prun_unid_codigo character varying(3) NOT NULL,
+    prun_alterado character varying(1),
+    prun_setor character varying(50),
+    prun_setordep character varying(10),
+    prun_etq numeric(5,0),
+    prun_ctz numeric(5,0),
+    prun_tecla character varying(3),
+    prun_espaco numeric(5,0),
+    prun_pzrepos numeric(5,0),
+    prun_pzentrega numeric(5,0),
+    prun_diasseg numeric(5,0),
+    prun_estmin numeric(15,5),
+    prun_estmax numeric(15,5),
+    prun_validade numeric(5,0),
+    prun_valminima numeric(5,0),
+    prun_marcado character varying(1),
+    prun_bloqueado character varying(1),
+    prun_prvenda numeric(15,5),
+    prun_prvendaant numeric(15,5),
+    prun_dtprvenda date,
+    prun_usualtpr numeric(5,0),
+    prun_margem numeric(15,5),
+    prun_margemmin numeric(15,5),
+    prun_prlista numeric(15,5),
+    prun_oferta character varying(1),
+    prun_dtoferta date,
+    prun_prnormal numeric(15,5),
+    prun_estoque1 numeric(15,5),
+    prun_estoque2 numeric(15,5),
+    prun_estoque3 numeric(15,5),
+    prun_estoque4 numeric(15,5),
+    prun_estoque5 numeric(15,5),
+    prun_dtultcomp date,
+    prun_prultcomp numeric(15,5),
+    prun_qultcomp numeric(15,5),
+    prun_ultsimbcomp character varying(3),
+    prun_redbcultcomp numeric(15,5),
+    prun_ultforn numeric(8,0),
+    prun_ctcompra numeric(15,5),
+    prun_ctmedio numeric(15,5),
+    prun_ctempresa numeric(15,5),
+    prun_ctfiscal numeric(15,5),
+    prun_cttransf numeric(15,5),
+    prun_dtcustos date,
+    prun_comissao numeric(15,5),
+    prun_difcusto numeric(15,5),
+    prun_difvenda numeric(15,5),
+    prun_emb character varying(2),
+    prun_qemb numeric(5,0),
+    prun_etqmag character varying(1),
+    prun_ativo character varying(1),
+    prun_prpdv numeric(15,5),
+    prun_pretq numeric(15,5),
+    prun_prctz numeric(15,5),
+    prun_qtdeabloja numeric(10,3),
+    prun_dtabloja date,
+    prun_dataofant date,
+    prun_precoofertaant numeric(15,5),
+    prun_preconormalant numeric(15,5),
+    prun_tpaltprvenda character varying(1),
+    prun_difcusto1 numeric(7,3),
+    prun_difcusto2 numeric(7,3),
+    prun_difcusto3 numeric(7,3),
+    prun_difcusto4 numeric(7,3),
+    prun_difcusto5 numeric(7,3),
+    prun_difvenda1 numeric(7,3),
+    prun_difvenda2 numeric(7,3),
+    prun_difvenda3 numeric(7,3),
+    prun_difvenda4 numeric(7,3),
+    prun_difvenda5 numeric(7,3),
+    prun_ctcompraant numeric(15,5),
+    prun_ctmedioant numeric(15,5),
+    prun_ctfiscalant numeric(15,5),
+    prun_ctempresaant numeric(15,5),
+    prun_cttransfant numeric(15,5),
+    prun_prultcompant numeric(15,5),
+    prun_transctmedio character varying(18),
+    prun_faquisicao character varying(2),
+    prun_extra1 character varying(50),
+    prun_extra2 character varying(50),
+    prun_extra3 character varying(50),
+    prun_extra4 numeric(15,5),
+    prun_extra5 numeric(15,5),
+    prun_extra6 numeric(15,5),
+    prun_extra7 numeric(15,5),
+    prun_extra8 numeric(15,5),
+    prun_extra9 numeric(15,5),
+    prun_codestoque numeric(8,0),
+    prun_fatorestoque numeric(15,5),
+    prun_dataalt date,
+    prun_usualt numeric(5,0),
+    prun_frentes numeric(5,0),
+    prun_orig_codigo numeric(5,0),
+    prun_prtabela numeric(15,5),
+    prun_prvenda2 numeric(15,5),
+    prun_creditost numeric(15,5),
+    prun_vmd numeric(12,3),
+    prun_codigosim character varying(20),
+    prun_dataofant2 date,
+    prun_precoofertaant2 numeric(15,5),
+    prun_preconormalant2 numeric(15,5),
+    prun_prvenda3 numeric(15,5),
+    prun_prvenda4 numeric(15,5),
+    prun_prvenda5 numeric(15,5),
+    prun_prnormal3 numeric(15,5),
+    prun_prnormal4 numeric(15,5),
+    prun_prnormal5 numeric(15,5),
+    prun_preconormalant3 numeric(15,5),
+    prun_preconormalant4 numeric(15,5),
+    prun_preconormalant5 numeric(15,5),
+    prun_precoofertaant3 numeric(15,5),
+    prun_precoofertaant4 numeric(15,5),
+    prun_precoofertaant5 numeric(15,5),
+    prun_margem3 numeric(15,5),
+    prun_margem4 numeric(15,5),
+    prun_margem5 numeric(15,5),
+    prun_fatorpr3 numeric(5,0),
+    prun_fatorpr4 numeric(5,0),
+    prun_fatorpr5 numeric(5,0),
+    prun_prpdv3 numeric(15,5),
+    prun_prpdv4 numeric(15,5),
+    prun_prpdv5 numeric(15,5),
+    prun_tipoagof character varying(5),
+    prun_tipoagofant character varying(5),
+    prun_tipoagofant2 character varying(5),
+    prun_tptrocas character varying(30),
+    prun_prvdapadrao numeric(15,5),
+    prun_curvasabc character varying(20),
+    prun_qtdeoferta numeric(15,5),
+    prun_dtinioferta date,
+    prun_percimpostos numeric(15,5),
+    prun_prvenda2ant numeric(15,5),
+    prun_prvenda2ant2 numeric(15,5),
+    prun_percimpostosfed numeric(15,5),
+    prun_percimpostosest numeric(15,5),
+    prun_percimpostosmun numeric(15,5),
+    prun_percimpostoschave character varying(6),
+    prun_percsugestao numeric(15,5),
+    prun_etiquetas character varying(100),
+    prun_ctcompraaltpr numeric(15,5),
+    prun_sens_codigo numeric(5,0),
+    prun_prnormal2 numeric(15,5),
+    prun_dtprvenda2 date,
+    prun_dtprvenda3 date,
+    prun_dtprvenda4 date,
+    prun_dtprvenda5 date,
+    prun_qtdemaxcli numeric(8,0),
+    prun_ctvenda numeric(15,5)
+) server erp options (
+    schema_name 'public',
+    table_name 'produn'
+)
+
 -- Função necessária para retornar os dados da query 11 conforme layout da integração
-create or replace function margem.fn_itens_desconto(
+create or replace function gestorrp.fn_itens_desconto(
     data_mvto date,
     unidade integer
 )
@@ -141,7 +297,7 @@ language plpgsql strict as $$
 $$;
 
 -- Função necessária para retornar os dados da query 14 conforme layout da integração
-create or replace function margem.fn_vendas_vendedor(
+create or replace function gestorrp.fn_vendas_vendedor(
     data_mvto date,
     unidade integer
 )
