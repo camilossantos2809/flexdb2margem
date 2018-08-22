@@ -207,6 +207,7 @@ language plpgsql strict as $$
 $$;
 
 -- Atribuição de permissões aos usuários criados no banco de dados.
+grant connect on database erp to gestorrp;
 grant usage on schema erp to gestorrp;
 grant select on all tables in schema erp to gestorrp;
 grant select on all tables in schema public to gestorrp;
