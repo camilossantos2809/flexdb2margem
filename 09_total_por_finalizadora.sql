@@ -1,7 +1,14 @@
--- Venda por finalizadora
+-- Venda por finalizadora/meio de pagamento
+
 SELECT
-    vdo_final as meio_pagto,
-    fin_descricao as descricao,
+    case
+        when vdo_final is null or vdo_final=''
+        then 'NULL' else vdo_final
+    end as meio_pagto,
+    case
+        when fin_descricao is null or fin_descricao = ''
+        then 'NULL' else fin_descricao
+    end as descricao,
     cast(sum(
         case 
             when vdo_norm_canc='N'
