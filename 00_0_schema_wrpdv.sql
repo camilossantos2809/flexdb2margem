@@ -1,13 +1,44 @@
 -- Comandos a ser executados no database wrpdv
 
--- Habilita a extensão postgres_fdw no database wrpdv
--- Essa extensão possibilita o uso de tabelas de diferentes databases
-create extension if not exists postgres_fdw;
+do $body$
+declare
+    -- Alterar as variáveis abaixo conforme o ambiente do cliente
+    erp_ip_servidor varchar := '10.1.12.127';
+    erp_porta_servidor varchar := '5432';
+    erp_database_name varchar := 'erp_margem';
+    senha_usuario_postgres varchar := 'rp1064';
+
+    pg_fdw_name varchar;
+    gestorrp_name varchar;
+    server_options varchar;
+    usuarios text[] := array['postgres', 'rpdv', 'erp'];
+    usuarios_map text[];
+begin
+
+-- A extensão postgres_fdw possibilita o uso de tabelas de diferentes databases
+-- Na integração ela é utilizada para consultar as tabelas do database erp no database wrpdv
+
+-- Verifica se extensão postgres_fdw está instalada no servidor do banco de dados antes de prosseguir
+select name into pg_fdw_name from pg_available_extensions where name ='postgres_fdw';
+if not found then
+    raise exception 'Extensão postgres_fdw não está disponível. Solicitar instalação do pacote contrib no servidor';
+else
+    raise notice 'Extensão postgres_fdw disponível no servidor';
+    -- Habilita a extensão postgres_fdw no database wrpdv caso ainda não esteja habilitada
+    create extension if not exists postgres_fdw;
+end if;
 
 -- Cria o usuário que será utilizado pelo MROBOT.exe para conectar no banco de dados
 -- Alterar a senha se necessário
 -- Esse usuário e senha que devem ser preenchidos no arquivo de configuração
-create user gestorrp with encrypted password 'merc123=';
+select rolname into gestorrp_name
+from pg_roles
+where rolname = 'gestorrp';
+if not found then
+    create user gestorrp with encrypted password 'merc123=';
+else
+    raise notice 'Usuário gestorrp já está criado no database';
+end if;
 
 -- Cria schema para manter os objetos criados para a integração separados dos utilizados no wrpdv
 create schema if not exists gestorrp authorization gestorrp;
@@ -15,13 +46,20 @@ create schema if not exists erp;
 
 -- Cria "link" com o database erp
 -- Em options será necessário alterar o conteúdo para os dados de acesso ao database erp
-CREATE SERVER erp 
-    FOREIGN DATA WRAPPER postgres_fdw 
-        OPTIONS (
-            host '10.1.12.127',
-            port '5432',
-            dbname 'erp'
-        );
+select srvoptions into server_options
+from pg_foreign_server
+where srvname='erp';
+if not found then
+    CREATE SERVER erp 
+        FOREIGN DATA WRAPPER postgres_fdw 
+            OPTIONS (
+                host erp_ip_servidor,
+                port erp_porta_servidor,
+                dbname erp_database_name
+            );
+else
+    raise warning 'Foreign Server erp já existe no database';
+end if;
 
 /*
 Se for necessário alterar os dados de conexão do database erp utilizar o exemplo abaixo
@@ -35,6 +73,11 @@ ALTER SERVER erp OPTIONS (
 
 -- Informar em user e password os dados de um superuser
 -- Se database erp e wrpdv estiverem no mesmo servidor pode ser utilizado o mesmo usuário e senha correspondente
+select array_agg(rolname)
+into usuarios_map
+from pg_user_mapping map 
+    inner join pg_authid rol on (map.umuser=rol.oid);
+
 create user mapping for postgres 
     server erp options(user 'postgres', password '123456');
 create user mapping for rpdv
@@ -368,3 +411,6 @@ grant select on all tables in schema erp to gestorrp;
 grant select on all tables in schema public to gestorrp;
 alter default privileges in schema erp grant select on tables to gestorrp;
 alter default privileges in schema public grant select on tables to gestorrp;
+
+end
+$body$ language plpgsql;
