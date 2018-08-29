@@ -19,7 +19,10 @@ SELECT
 FROM
     vdonline
         left join finalizadoras
-            on (vdo_final=lpad(fin_codigo::text, 2,'0'))
+            on (
+                vdo_final=lpad(fin_codigo::text, 2,'0')
+                and fin_codigo=1
+            )
 where 
     (
         vdo_data >= CURRENT_DATE 
