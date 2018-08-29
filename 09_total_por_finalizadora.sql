@@ -3,11 +3,11 @@
 SELECT
     case
         when vdo_final is null or vdo_final=''
-        then 'NULL' else vdo_final
+        then null else vdo_final
     end as meio_pagto,
     case
         when fin_descricao is null or fin_descricao = ''
-        then 'NULL' else fin_descricao
+        then null else fin_descricao
     end as descricao,
     cast(sum(
         case 
