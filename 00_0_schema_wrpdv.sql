@@ -6,7 +6,8 @@ declare
     erp_ip_servidor varchar := '10.1.12.127';
     erp_porta_servidor varchar := '5432';
     erp_database_name varchar := 'erp_margem';
-    senha_usuario_postgres varchar := 'rp1064';
+    nome_super_user varchar := 'rpdv'; -- Informar postgres ou o superuser que o cliente disponibilizar
+    senha_super_user varchar := 'rp1064';
 
     usuarios text[] := array['postgres', 'rpdv', 'erp', 'gestorrp'];
     usuario text;
@@ -93,7 +94,7 @@ loop
         else
             raise notice 'Mapeando usuário % no foreign server erp', usuario;
             execute format('create user mapping for %I server erp options(user %s, password %s);',
-                usuario, quote_literal('postgres'), quote_literal(senha_usuario_postgres));
+                usuario, quote_literal(nome_super_user), quote_literal(senha_super_user));
         end if;
     end if;
 end loop;
