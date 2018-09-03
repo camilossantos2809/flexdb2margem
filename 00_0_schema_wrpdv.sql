@@ -8,12 +8,17 @@ declare
     erp_database_name varchar := 'erp_margem';
     senha_usuario_postgres varchar := 'rp1064';
 
+    usuarios text[] := array['postgres', 'rpdv', 'erp', 'gestorrp'];
+    usuario text;
+    usuarios_map text[];
+    foreing_tables text[];
     pg_fdw_name varchar;
     gestorrp_name varchar;
     server_options varchar;
-    usuarios text[] := array['postgres', 'rpdv', 'erp'];
-    usuarios_map text[];
 begin
+
+raise notice 'Script iniciado!';
+set standard_conforming_strings to on;
 
 -- A extensão postgres_fdw possibilita o uso de tabelas de diferentes databases
 -- Na integração ela é utilizada para consultar as tabelas do database erp no database wrpdv
@@ -50,15 +55,14 @@ select srvoptions into server_options
 from pg_foreign_server
 where srvname='erp';
 if not found then
-    CREATE SERVER erp 
+    execute format('CREATE SERVER erp 
         FOREIGN DATA WRAPPER postgres_fdw 
-            OPTIONS (
-                host erp_ip_servidor,
-                port erp_porta_servidor,
-                dbname erp_database_name
-            );
+        OPTIONS (host %s,port %s,dbname %s)',
+        quote_literal(erp_ip_servidor),
+        quote_literal(erp_porta_servidor),
+        quote_literal(erp_database_name));
 else
-    raise warning 'Foreign Server erp já existe no database';
+    raise notice 'Foreign Server erp já existe no database';
 end if;
 
 /*
@@ -75,19 +79,24 @@ ALTER SERVER erp OPTIONS (
 -- Se database erp e wrpdv estiverem no mesmo servidor pode ser utilizado o mesmo usuário e senha correspondente
 select array_agg(rolname)
 into usuarios_map
-from pg_user_mapping map 
+from pg_user_mapping map
     inner join pg_authid rol on (map.umuser=rol.oid);
 
-create user mapping for postgres 
-    server erp options(user 'postgres', password '123456');
-create user mapping for rpdv
-    server erp options(user 'postgres', password '123456');
-create user mapping for erp
-    server erp options(user 'postgres', password '123456');
-
--- Utilizar mesma senha definida na criação do usuário gestorrp
-create user mapping for gestorrp
-    server erp options(user 'gestorrp', password 'merc123=');
+foreach usuario in array usuarios
+loop
+    if usuarios_map @> array[usuario]::text[] then
+        raise notice 'Usuário % já mapeado no foreign server erp', usuario;
+    else
+        if usuario = 'gestorrp' then
+            raise notice 'Mapeando usuário gestorrp no foreign server erp';
+            create user mapping for gestorrp server erp options(user 'gestorrp', password 'merc123=');
+        else
+            raise notice 'Mapeando usuário % no foreign server erp', usuario;
+            execute format('create user mapping for %I server erp options(user %s, password %s);',
+                usuario, quote_literal('postgres'), quote_literal(senha_usuario_postgres));
+        end if;
+    end if;
+end loop;
 
 /*
 Se necessário alterar o usuário e/ou senha depois de criado pode ser realizada a alteração conforme o exemplo:
@@ -97,7 +106,7 @@ alter user mapping for postgres
 */
 
 -- Cria a tabela vdonlineprod do database erp no database wrpdv através do postgres_fdw
-create foreign table erp.vdonlineprod(
+create foreign table if not exists erp.vdonlineprod(
     vopr_datamvto date,
     vopr_hora varchar(6),
     vopr_status varchar(1),
@@ -118,7 +127,7 @@ options (
 );
 
 -- Cria a tabela produn do database erp no database wrpdv através do postgres_fdw
-create foreign table erp.produn(
+create foreign table if not exists erp.produn(
     prun_prod_codigo numeric(8,0) NOT NULL,
     prun_unid_codigo character varying(3) NOT NULL,
     prun_alterado character varying(1),
@@ -273,6 +282,7 @@ create foreign table erp.produn(
     table_name 'produn'
 );
 
+raise notice 'Criando funções no schema gestorrp...';
 -- Função necessária para retornar os dados da query 11 conforme layout da integração
 create or replace function gestorrp.fn_itens_desconto(
     data_mvto date,
@@ -404,13 +414,17 @@ language plpgsql strict as $$
         return;
     end
 $$;
+raise notice 'Funções adicionadas ao schema gestorrp';
 
 -- Atribuição de permissões aos usuários criados no banco de dados.
+raise notice 'Atribuindo permissões ao usuário gestorrp';
 grant usage on schema erp to gestorrp;
 grant select on all tables in schema erp to gestorrp;
 grant select on all tables in schema public to gestorrp;
 alter default privileges in schema erp grant select on tables to gestorrp;
 alter default privileges in schema public grant select on tables to gestorrp;
 
+set standard_conforming_strings to off;
+raise notice 'Script concluído!';
 end
 $body$ language plpgsql;
