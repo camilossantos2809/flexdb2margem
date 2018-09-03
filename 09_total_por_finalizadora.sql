@@ -21,7 +21,6 @@ FROM
         left join finalizadoras
             on (
                 vdo_final=lpad(fin_codigo::text, 2,'0')
-                and fin_codigo=1
             )
 where 
     (
@@ -30,5 +29,6 @@ where
     )
     and vdo_unidade = '001'--lpad(cast(numeroLoja as varchar),3,'0')
     and vdo_tipo in('V','v')
+    and vdo_final <> ''
 group by vdo_final, fin_descricao
 order by 1;
