@@ -10,14 +10,15 @@ from (
         count(distinct vopr_cupom) as num_cupons,
         count(distinct vopr_prod_codigo) as num_itens
     from
-        erp.vdonlineprod vd
+        erp.dbo.vdonlineprod vd
             left join tabitens
                 on (vd.vopr_prod_codigo=cast(ite_cod_interno as numeric))
     where
-        vd.vopr_datamvto=CURRENT_DATE
-        and vd.vopr_unid_codigo = '001'--lpad(cast(numeroLoja as varchar),3,'0')
+        vopr_datamvto = cast(CURRENT_TIMESTAMP as date)
+        and vopr_unid_codigo = '001' --right('000'+cast(numeroLoja as varchar(3)), 3)
     group by
         left(vopr_hora,2)
 ) as x
 order by
-    hora;
+    hora
+GO

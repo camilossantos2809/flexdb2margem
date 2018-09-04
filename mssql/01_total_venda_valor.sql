@@ -9,9 +9,7 @@ SELECT
 FROM
     vdonline
 where 
-    (
-        vdo_data >= current_date --'2018-05-14'::date 
-        and vdo_data < current_date + interval '1 day' --'2018-05-14'::date 
-    )
-    and vdo_unidade = '001'--lpad(cast(numeroLoja as varchar),3,'0')
-    and vdo_tipo in('V','v');
+    cast(vdo_data as date) = cast(CURRENT_TIMESTAMP as date)
+    and vdo_unidade = '001' --right('000'+cast(numeroLoja as varchar(3)), 3)
+    and vdo_norm_canc = 'N'
+go

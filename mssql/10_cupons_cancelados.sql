@@ -12,10 +12,8 @@ FROM
         left join usuario
             on (vdo_operador=usu_codigo)
 where 
-    (
-        vdo_data >= CURRENT_DATE
-        and vdo_data < CURRENT_DATE + interval '1 day'
-    )
-    and vdo_unidade = '001'--lpad(cast(numeroLoja as varchar),3,'0')
+    cast(vdo_data as date) = cast(CURRENT_TIMESTAMP as date)
+    and vdo_unidade = '001' --right('000'+cast(numeroLoja as varchar(3)), 3)
     and vdo_norm_canc='C'
-order by "hora";
+order by "hora"
+GO

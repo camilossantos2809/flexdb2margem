@@ -15,20 +15,21 @@ SELECT
             then vdo_valor else vdo_valor * (-1)
         end
     ) as numeric(10,2)) as valor,
-    count(distinct vdo_cupom) filter (where vdo_tipo='V') as qtd
+    count(distinct
+        case
+            when vdo_tipo = 'V'
+            then vdo_cupom
+        end
+    ) as qtd
 FROM
     vdonline
         left join finalizadoras
-            on (
-                vdo_final=lpad(fin_codigo::text, 2,'0')
-            )
+            on (vdo_final=right('00'+fin_codigo, 2))
 where 
-    (
-        vdo_data >= CURRENT_DATE 
-        and vdo_data < CURRENT_DATE + interval '1 day'
-    )
-    and vdo_unidade = '001'--lpad(cast(numeroLoja as varchar),3,'0')
-    and vdo_tipo in('V','v')
+    cast(vdo_data as date) = cast(CURRENT_TIMESTAMP as date)
+    and vdo_unidade = '001' --right('000'+cast(numeroLoja as varchar(3)), 3)
+    and vdo_norm_canc = 'N'
     and vdo_final <> ''
 group by vdo_final, fin_descricao
-order by 1;
+order by 1
+GO

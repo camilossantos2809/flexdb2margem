@@ -7,18 +7,21 @@ SELECT
             then vdo_valor else vdo_valor * (-1)
         end
     ) as numeric(10,2)) as valor,
-    count(distinct vdo_cupom) filter (where vdo_tipo='V') as qtd_cupom
+    count(distinct 
+        case
+            when vdo_tipo = 'V' --CORRIGIR: mssql obriga que o campo esteja listado em group by
+            then vdo_cupom
+        end
+    ) as qtd_cupom
 FROM
     vdonline
         left join usuario
             on (vdo_operador=usu_codigo)
 where 
-    (
-        vdo_data >= CURRENT_DATE 
-        and vdo_data < CURRENT_DATE + interval '1 day'
-    )
-    and vdo_unidade = '001'--lpad(cast(numeroLoja as varchar),3,'0')
-    and vdo_tipo in('V','v')
+    cast(vdo_data as date) = cast(CURRENT_TIMESTAMP as date)
+    and vdo_unidade = '001' --right('000'+cast(numeroLoja as varchar(3)), 3)
+    and vdo_norm_canc='N'
 group by 
     concat(vdo_operador,' - ', usu_nome)
-order by 1;
+order by 1
+GO
