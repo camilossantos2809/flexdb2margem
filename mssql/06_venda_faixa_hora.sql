@@ -1,14 +1,14 @@
 -- Venda por faixa de hora
 select
     *,
-    round(num_itens/num_cupons, 2) as media_itens,
-    round(valor/num_cupons, 2) as media_valor
+    cast(round(num_itens/num_cupons, 2) as numeric(10,2)) as media_itens,
+    cast(round(valor/num_cupons, 2) as numeric(10,2)) as media_valor
 from (
     select
-        left(vopr_hora,2) as hora,
-        sum(coalesce(vopr_valor-vopr_desconto,0)) as valor,
-        count(distinct vopr_cupom) as num_cupons,
-        count(distinct vopr_prod_codigo) as num_itens
+        cast(left(vopr_hora,2) as varchar(2)) as hora,
+        cast(sum(coalesce(vopr_valor-vopr_desconto,0)) as numeric(10,2)) as valor,
+        cast(count(distinct vopr_cupom) as integer) as num_cupons,
+        cast(count(distinct vopr_prod_codigo) as integer) as num_itens
     from
         erp.dbo.vdonlineprod vd
             left join tabitens

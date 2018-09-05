@@ -1,4 +1,4 @@
--- 100 produtos mais vendidos, por valor
+-- 5000 produtos mais vendidos, por valor
 with prun as (
     select
         prun_prod_codigo, 
@@ -11,8 +11,8 @@ with prun as (
             prun_ctmedio > 0
             or prun_ctvenda > 0
         )
-), top100 as(
-    select top 100
+), top5000 as(
+    select top 5000
         ite_codbarra as codigo,
         ite_descricao as descricao,
         max(coalesce(tpc_preco,0)) as valor_unitario,
@@ -48,5 +48,5 @@ select
     cast(custo*quantidade as numeric(10,2)) as custo,
     cast(valor-(custo*quantidade) as numeric (10,2)) as lucro
 from
-    top100
+    top5000
 GO
