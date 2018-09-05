@@ -1,21 +1,46 @@
 -- vendas por departamento/seção
+with prun as (
+    select
+        prun_prod_codigo,
+        prun_ctmedio,
+        prun_ctvenda
+    from erp.dbo.produn
+    where prun_unid_codigo='001' --right('000'+cast(numeroLoja as varchar(3)), 3)
+        and (
+            prun_ctmedio > 0
+            or prun_ctvenda > 0
+        )
+), total_venda as (
+    SELECT
+        vopr_prod_codigo,
+        cast(sum(coalesce(vopr_valor - vopr_desconto, 0)) as numeric(10,2)) as valor,
+        sum(coalesce(vopr_qtde,0)) as quantidade,
+        cast((max(coalesce(prun_ctmedio,0)) + max(coalesce(prun_ctvenda,0)))*sum(vopr_qtde) as numeric(10,2)) as custo
+    FROM
+        erp.dbo.vdonlineprod
+            left join prun
+                on (vopr_prod_codigo=prun_prod_codigo)
+    where 
+        vopr_datamvto = cast(CURRENT_TIMESTAMP as date)
+        and vopr_unid_codigo = '001'--right('000'+cast(numeroLoja as varchar(3)), 3)
+    group by
+        vopr_prod_codigo
+)
 select
     dpt_codigo as codigo,
     dpt_nome as descricao,
-    sum(coalesce(vopr_qtde,0)) as quantidade,
-    sum(coalesce(vopr_valor-vopr_desconto,0)) as valor
+    sum(quantidade) as quantidade,
+    sum(valor) as valor,
+    cast(sum(custo) as numeric(10,2)) as custo,
+    cast(sum(valor)-sum(custo) as numeric(10,2)) as lucro
 from
-    erp.dbo.vdonlineprod vd
+    total_venda
         left join tabitens
-            on (vd.vopr_prod_codigo=cast(ite_cod_interno as numeric))
+            on (vopr_prod_codigo=cast(ite_cod_interno as numeric))
         left join departamentos
             on (ite_cod_dpto=dpt_codigo)
-where
-    vopr_datamvto = cast(CURRENT_TIMESTAMP as date)
-    and vopr_unid_codigo = '001' --right('000'+cast(numeroLoja as varchar(3)), 3)
 group by
     dpt_codigo,
     dpt_nome
 order by
     "valor" desc
-GO
