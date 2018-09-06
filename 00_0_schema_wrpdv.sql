@@ -6,8 +6,8 @@ declare
     erp_ip_servidor varchar := '10.1.12.127';
     erp_porta_servidor varchar := '5432';
     erp_database_name varchar := 'erp_margem';
-    nome_super_user varchar := 'rpdv'; -- Informar postgres ou o superuser que o cliente disponibilizar
-    senha_super_user varchar := 'rp1064';
+    nome_super_user varchar := 'postgres'; -- Informar postgres ou o superuser que o cliente disponibilizar
+    senha_super_user varchar := '123456';
 
     usuarios text[] := array['postgres', 'rpdv', 'erp', 'gestorrp'];
     usuario text;
@@ -62,6 +62,7 @@ if not found then
         quote_literal(erp_ip_servidor),
         quote_literal(erp_porta_servidor),
         quote_literal(erp_database_name));
+    raise notice 'Criado Foreign Server erp para database %.', erp_database_name;
 else
     raise notice 'Foreign Server erp já existe no database';
 end if;
