@@ -24,6 +24,7 @@ where
     )
     and vdo_unidade = '001'--lpad(cast(numeroLoja as varchar),3,'0')
     and vdo_tipo in('V','v')
+    and vdo_final <> ''
 group by
     cast(vdo_data as date),
     concat(vdo_operador,' - ', usu_nome),
