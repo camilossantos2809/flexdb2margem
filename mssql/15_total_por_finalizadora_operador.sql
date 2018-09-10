@@ -26,6 +26,7 @@ where
     cast(vdo_data as date) = cast(CURRENT_TIMESTAMP as date)
     and vdo_unidade = '001' --right('000'+cast(numeroLoja as varchar(3)), 3)
     and vdo_norm_canc='N'
+    and vdo_final <> ''
 group by
     cast(vdo_data as date),
     concat(vdo_operador,' - ', usu_nome),
