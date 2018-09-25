@@ -1,5 +1,12 @@
 -- Venda por finalizadora/meio de pagamento
 
+with fin as (
+    select
+        lpad(fin_codigo::text, 2,'0') as codigo,
+        fin_descricao
+    from finalizadoras
+    group by 1, 2
+)
 SELECT
     case
         when vdo_final is null or vdo_final=''
@@ -18,14 +25,14 @@ SELECT
     count(distinct vdo_cupom) filter (where vdo_tipo='V') as qtd
 FROM
     vdonline
-        left join finalizadoras
+        left join fin
             on (
-                vdo_final=lpad(fin_codigo::text, 2,'0')
+                vdo_final=codigo
             )
 where 
     (
         vdo_data >= CURRENT_DATE 
-        and vdo_data < CURRENT_DATE + interval '1 day'
+        and vdo_data < CURRENT_DATE::date + interval '1 day'
     )
     and vdo_unidade = '001'--lpad(cast(numeroLoja as varchar),3,'0')
     and vdo_tipo in('V','v')
