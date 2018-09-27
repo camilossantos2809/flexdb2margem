@@ -122,7 +122,7 @@ language plpgsql strict as $$
                 cast(tvd_data_hora as time) as hora,
                 op.usu_nome::text as operador,
                 sup.usu_nome::text as supervisor,
-                round(cast(tvd_registro[29] as numeric)/100,2) as valor,
+                round(cast(tvd_registro[12] as numeric)/100,2) as valor,
                 tvd_cupom as nro_cupom,
                 cast(tvd_cpseq as integer)-1 as item,
                 tvd_registro[1]::varchar(13) as codigo_ean,
@@ -132,7 +132,9 @@ language plpgsql strict as $$
                     on (tvd_operador=op.usu_codigo)
                 left join usuario sup
                     on (tvd_registro[22]=sup.usu_codigo)
-            where tvd_registro[29]<>''
+            where tvd_registro[12] <> '' -- valor desconto gerencial
+                and tvd_registro[12]::numeric > 0
+                and tvd_registro[25] = '' -- identificador do desconto aplicado automaticamente
         $sql$, v_tabela, v_unidade);
 
         return query execute v_query using(data_mvto);
