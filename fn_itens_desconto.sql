@@ -33,7 +33,7 @@ language plpgsql strict as $$
                     tvd_operador,
                     tvd_cpseq,
                     string_to_array(tvd_registro, '|') as tvd_registro
-                from %s
+                from %s vitn
                 where
                     (
                         tvd_data_hora >= $1 
@@ -41,6 +41,19 @@ language plpgsql strict as $$
                     )
                     and tvd_tipo_reg = 'VITN'
                     and tvd_unidade = %s
+                    and not exists (
+                        select tvd_registro
+                        from %s as dfan
+                        where
+                            (
+                                dfan.tvd_data_hora >= $1
+                                and dfan.tvd_data_hora < $1 + interval '1 day'
+                            )
+                            and dfan.tvd_tipo_reg = 'DFAN'
+                            and dfan.tvd_unidade = %s
+                            and dfan.tvd_pdv = vitn.tvd_pdv
+                            and dfan.tvd_cupom = vitn.tvd_cupom
+                    )
             )
             select
                 cast(tvd_data_hora as date) as dataproc,
@@ -57,10 +70,10 @@ language plpgsql strict as $$
                     on (tvd_operador=op.usu_codigo)
                 left join usuario sup
                     on (tvd_registro[22]=sup.usu_codigo)
-            where tvd_registro[12] <> '' -- valor desconto gerencial
-            and tvd_registro[12]::numeric > 0
+            where tvd_registro[12] <> ''
+                and tvd_registro[12]::numeric > 0
                 and tvd_registro[25] = '' -- identificador do desconto aplicado automaticamente
-        $sql$, v_tabela, v_unidade);
+        $sql$, v_tabela, v_unidade, v_tabela, v_unidade);
 
         return query execute v_query using(data_mvto);
         return;
