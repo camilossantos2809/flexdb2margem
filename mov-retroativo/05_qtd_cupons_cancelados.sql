@@ -1,4 +1,9 @@
--- Quantidade cupons válidos
+/*
+    Quantidade cupons válidos
+
+    Comando a ser executado no database erp
+*/
+
 SELECT
     count(*) as qtd_cupons
 from vdonlineprod

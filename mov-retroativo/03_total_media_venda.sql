@@ -1,4 +1,9 @@
--- média de valores por produto
+/*
+    Média de valores por produto
+
+    Comando a ser executado no database erp
+*/
+
 select
     round(avg(vopr_valor-vopr_desconto), 2) as media_itens
 from vdonlineprod

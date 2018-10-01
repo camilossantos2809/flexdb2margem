@@ -1,4 +1,9 @@
--- Ticket médio
+/*
+    Ticket médio
+
+    Comando a ser executado no database erp
+*/
+
 with cupons as (
     SELECT
         cast(sum(coalesce(vopr_valor-vopr_desconto,0)) as numeric(10,2)) as valor

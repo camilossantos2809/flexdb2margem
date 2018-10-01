@@ -1,4 +1,9 @@
--- Venda por faixa de hora
+/*
+    Venda por faixa de hora
+
+    Comando a ser executado no database erp
+*/
+
 select
     *,
     round(num_itens/num_cupons, 2) as media_itens,
