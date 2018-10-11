@@ -1,4 +1,13 @@
 -- Venda por operador e finalizadora
+
+with fin as (
+    select
+        lpad(fin_codigo::text, 2,'0') as codigo,
+        fin_config,
+        upper(fin_descricao) as fin_descricao
+    from finalizadoras
+    group by 1, 2, 3
+)
 SELECT
     cast(vdo_data as date) as data,
     concat(vdo_operador,' - ', usu_nome) as operador,
@@ -15,8 +24,13 @@ FROM
     vdonline
         left join usuario
             on (vdo_operador=usu_codigo)
-        left join finalizadoras
-            on (vdo_final=lpad(fin_codigo::text, 2,'0'))
+        inner join estac
+            on (vdo_pdv = est_pdv)
+        inner join fin
+            on (
+                vdo_final=codigo
+                and fin_config=est_conf_final
+            )
 where 
     (
         vdo_data >= CURRENT_DATE 

@@ -3,14 +3,15 @@
 with fin as (
     select
         lpad(fin_codigo::text, 2,'0') as codigo,
-        fin_descricao
+        fin_config,
+        upper(fin_descricao) as fin_descricao
     from finalizadoras
-    group by 1, 2
+    group by 1, 2, 3
 )
 SELECT
     case
         when vdo_final is null or vdo_final=''
-        then null else vdo_final
+        then null else fin_config || vdo_final
     end as meio_pagto,
     case
         when fin_descricao is null or fin_descricao = ''
@@ -25,9 +26,14 @@ SELECT
     count(distinct vdo_cupom) filter (where vdo_tipo='V') as qtd
 FROM
     vdonline
-        left join fin
+        inner join estac
+            on (
+                vdo_pdv = est_pdv
+            )
+        inner join fin
             on (
                 vdo_final=codigo
+                and fin_config=est_conf_final
             )
 where 
     (
@@ -37,5 +43,5 @@ where
     and vdo_unidade = '001'--lpad(cast(numeroLoja as varchar),3,'0')
     and vdo_tipo in('V','v')
     and vdo_final <> ''
-group by vdo_final, fin_descricao
+group by vdo_final, fin_descricao, fin_config
 order by 1;

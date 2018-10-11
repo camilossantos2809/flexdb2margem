@@ -12,8 +12,8 @@ with valor_dia as (
         vdonline
     where 
         (
-            vdo_data >= current_date --'2018-05-14'::date 
-            and vdo_data < current_date + interval '1 day' --'2018-05-14'::date 
+            vdo_data >= CURRENT_DATE --'2018-05-14'::date 
+            and vdo_data < CURRENT_DATE::date + interval '1 day' --'2018-05-14'::date 
         )
         and vdo_unidade = '001'--lpad(cast(numeroLoja as varchar),3,'0')
         and vdo_tipo in('V','v')
@@ -35,6 +35,6 @@ qtde_dia as (
         and vdo_final<>''
 )
 SELECT
-    valor/qtde_dia as valor
+    round(valor/qtd_cupons,2) as valor
 FROM
     valor_dia,qtde_dia;
