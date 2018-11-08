@@ -23,12 +23,13 @@ SELECT
             then vdo_valor else vdo_valor * (-1)
         end
     ) as numeric(10,2)) as valor,
-    count(distinct vdo_cupom) filter (where vdo_tipo='V') as qtd
+    count(distinct (vdo_cupom, vdo_pdv)) filter (where vdo_tipo='V') as qtd
 FROM
     vdonline
         inner join estac
             on (
                 vdo_pdv = est_pdv
+                and vdo_unidade = est_unidade
             )
         inner join fin
             on (
