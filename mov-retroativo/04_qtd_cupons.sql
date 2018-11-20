@@ -4,10 +4,11 @@
     Comando a ser executado no database erp
 */
 
-SELECT
-    count(*) as qtd_cupons
-from vdonlineprod
+select
+    sum(mfpd_ncl) as qtd_cupons
+from
+    movfechpdv
 where
-    vopr_datamvto='2018-09-27'
-    and vopr_unid_codigo = '001' --lpad(cast(1 as varchar),3,'0')
-    and vopr_valor > 0;
+    mfpd_data = cast('2018-11-19' as date)
+    and mfpd_unid_codigo = '001' --lpad(cast(1 as varchar),3,'0')
+    and mfpd_status = 'N'
