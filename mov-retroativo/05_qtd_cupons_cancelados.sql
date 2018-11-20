@@ -5,7 +5,7 @@
 */
 
 SELECT
-    count(*) as qtd_cupons
+    count(distinct (vopr_pdvs_codigo, vopr_cupom)) as qtd_cupons
 from vdonlineprod
 where
     vopr_datamvto='2018-09-27'

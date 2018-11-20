@@ -11,4 +11,4 @@ from
 where
     mfpd_data = cast('2018-11-19' as date)
     and mfpd_unid_codigo = '001' --lpad(cast(1 as varchar),3,'0')
-    and mfpd_status = 'N'
+    and mfpd_status = 'N';
