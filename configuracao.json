@@ -4,11 +4,16 @@
 		"licenca": "ABCDEFGHIJ",
 		"cnpj": "12345678901234",
 		"numeroLoja": 1,
-		"timeZone": "America/Bahia",
-		"Estado": "PARANÁ",
-		"Cidade": "CURITIBA",
-		"Bairro": "REBOUÇAS",
-		"Automacao": "RP INFO",
+		"codigoSistema": 8.1,
+		"automacao": "RP INFO",
+		"localizacao": {
+			"estado": "PARANÁ",
+			"codigoEstado": 41,
+			"cidade": "CURITIBA",
+			"codigoCidade": 410690,
+			"bairro": "REBOUÇAS",
+			"timeZone": "America/Bahia"
+		},
 		"horarios": {
 			"uteis": {
 				"inicio": "00:00",
@@ -19,23 +24,50 @@
 				"fim": "23:59"
 			}
 		},
-		"codigoSistema": 8.1,
-		"host": "192.168.0.1",
-		"nomeBanco": "wrpdv",
-		"usuario": "gestorrp",
-		"senha": "merc123=",
-		"porta": 5432
+		"bancoFrenteLojaPrimario": {
+			"host": "192.168.0.1",
+			"nomeBanco": "wrpdv",
+			"usuario": "gestorrp",
+			"senha": "merc123=",
+			"porta": 5432
+		},
+		"bancoFrenteLojaSecundario": {
+			"host": "192.168.0.1",
+			"nomeBanco": "erp",
+			"usuario": "gestorrp",
+			"senha": "merc123=",
+			"porta": 5432
+		},
+		"bancoRetaguardaPrimario": {
+			"host": "192.168.0.1",
+			"nomeBanco": "erp",
+			"usuario": "gestorrp",
+			"senha": "merc123=",
+			"porta": 5432
+		},
+		"bancoRetaguardaSecundario": {
+			"host": "192.168.0.1",
+			"nomeBanco": "erp",
+			"usuario": "gestorrp",
+			"senha": "merc123=",
+			"porta": 5432
+		}
 	},
 	{
 		"nomeFantasia": "Unidade 002",
 		"licenca": "ABCDEFGHIJ",
 		"cnpj": "12345678900000",
 		"numeroLoja": 2,
-		"timeZone": "America/Bahia",
-		"Estado": "PARANÁ",
-		"Cidade": "CURITIBA",
-		"Bairro": "CENTRO",
-		"Automacao": "RP INFO",
+		"codigoSistema": 8.1,
+		"automacao": "RP INFO",
+		"localizacao": {
+			"estado": "PARANÁ",
+			"codigoEstado": 41,
+			"cidade": "CURITIBA",
+			"codigoCidade": 410690,
+			"bairro": "CENTRO",
+			"timeZone": "America/Bahia"
+		},
 		"horarios": {
 			"uteis": {
 				"inicio": "00:00",
@@ -46,11 +78,33 @@
 				"fim": "23:59"
 			}
 		},
-		"codigoSistema": 8.1,
-		"host": "192.168.0.1",
-		"nomeBanco": "wrpdv",
-		"usuario": "gestorrp",
-		"senha": "merc123=",
-		"porta": 5432
+		"bancoFrenteLojaPrimario": {
+			"host": "192.168.0.1",
+			"nomeBanco": "wrpdv",
+			"usuario": "gestorrp",
+			"senha": "merc123=",
+			"porta": 5432
+		},
+		"bancoFrenteLojaSecundario": {
+			"host": "192.168.0.1",
+			"nomeBanco": "erp",
+			"usuario": "gestorrp",
+			"senha": "merc123=",
+			"porta": 5432
+		},
+		"bancoRetaguardaPrimario": {
+			"host": "192.168.0.1",
+			"nomeBanco": "erp",
+			"usuario": "gestorrp",
+			"senha": "merc123=",
+			"porta": 5432
+		},
+		"bancoRetaguardaSecundario": {
+			"host": "192.168.0.1",
+			"nomeBanco": "erp",
+			"usuario": "gestorrp",
+			"senha": "merc123=",
+			"porta": 5432
+		}
 	}
 ]
