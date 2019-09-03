@@ -227,4 +227,7 @@ grant usage on schema erp to gestorrp;
 grant select on all tables in schema erp to gestorrp;
 grant select on all tables in schema public to gestorrp;
 alter default privileges in schema erp grant select on tables to gestorrp;
+alter default privileges in schema erp for role erp grant select on tables to gestorrp;
+alter default privileges in schema erp for role rpdv grant select on tables to gestorrp;
 alter default privileges in schema public grant select on tables to gestorrp;
+alter default privileges in schema public for role rpdv grant select on tables to gestorrp;
